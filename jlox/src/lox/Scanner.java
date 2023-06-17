@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Scanner {
+    private char c;
     //the source file as one big string
     private final String source;
     //The list of tokens for the source file is stored as an ArrayList. Remember List<Token> is an interface and ArrayList<> is the implementation.
@@ -45,7 +46,7 @@ public class Scanner {
     //at the beginning of scanToken(). thus we have 1 character of lookahead in our scanner.
     //'peek()' is how we can access the character pointed to by 'current.' 'match()' looks at this 
     private void scanToken() {
-        char c = advance();
+        c = advance();
         switch (c) {
             //single-character tokens
             case '(': addToken(LEFT_PAREN); break;
@@ -76,10 +77,27 @@ public class Scanner {
             //BTW, comments don't get added as tokens, and instead just disappear 
             case '/':
                 if (match('/')) {
-                    while (peek() != '\n' && !isAtEnd()) advance();
+                    while (peek() != '\n' && !isAtEnd()) {
+                        advance();
+                    }
+                } 
+                //multi-line comment
+                else if (match('*')) {
+                    if (isAtEnd()) {
+                        Lox.error(line, "UMLC.");
+                        break;
+                    }
+                    while (!isAtEnd()) {
+                        if ((peek() == '*' && peekNext() == '/')) {
+                            advance(2);
+                            break;
+                        }
+                        advance();
+                    }
                 } else {
                     addToken(SLASH);
                 }
+                break;
             //ignore whitespace
             case ' ':
             case '\r':
@@ -203,6 +221,12 @@ public class Scanner {
     private char advance() {
         return source.charAt(current++);
     }
+    private char advance(int by) {
+        for (int i = 0; i < by; i++) {
+            advance();
+        }
+        return source.charAt(current - 1);
+    }
 
     //add a non-literal token (overloaded addToken())
     private void addToken(TokenType type) {
@@ -234,6 +258,10 @@ public class Scanner {
         keywords.put("true", TRUE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
+    }
+
+    private void debugLookahead() {
+        System.out.println("c: " + c + " | peek(): " + peek() + " | peeknext(): " + peekNext());
     }
 }
 
