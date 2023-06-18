@@ -83,16 +83,18 @@ public class Scanner {
                 } 
                 //multi-line comment
                 else if (match('*')) {
-                    if (isAtEnd()) {
-                        Lox.error(line, "UMLC.");
-                        break;
-                    }
+                    boolean terminated = false;
                     while (!isAtEnd()) {
+                        if (peek() == '\n') line++;
                         if ((peek() == '*' && peekNext() == '/')) {
+                            terminated = true;
                             advance(2);
                             break;
                         }
                         advance();
+                    }
+                    if (!terminated) {
+                        Lox.error(line, "Unterminated MLC.");
                     }
                 } else {
                     addToken(SLASH);

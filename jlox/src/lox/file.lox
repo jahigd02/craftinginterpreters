@@ -1,0 +1,28 @@
+/* variable declaration, computation and print */
+var a = 3;
+var b = 94;
+var average = (a+b)/2;
+
+print average;
+
+/* loop with variable re-assignment */
+a = 1;
+while (a < 10) {
+    print a;
+    a = a + 1;
+}
+
+/* closure */
+fun returnFunction() {
+  var outside = "outside";
+
+  fun inner() {
+    print outside;
+  }
+
+  return inner;
+}
+
+var fn = returnFunction();
+
+fn();

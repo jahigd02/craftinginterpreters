@@ -11,6 +11,8 @@ import java.util.List;
 public class Lox {
     static boolean hadError = false;
     public static void main(String[] args) throws IOException {
+        //String currentDirectory = System.getProperty("user.dir");
+        //System.out.println(currentDirectory);
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
             System.exit(64);
@@ -18,7 +20,6 @@ public class Lox {
             //run the interpereter
             runFile(args[0]);
         } else {
-            //run the REPL
             runPrompt();
         }
     }
